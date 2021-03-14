@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller'; 
 import { AppService } from './app.service';
 import { CategoriesModule } from './categories/categories.module';
+import { CategoriesService } from './categories/categories.service';
+import { Category } from './categories/entities/category.entity';
 // import { Category } from './categories/entities/category.entity';
 
 @Module({
@@ -17,9 +19,8 @@ import { CategoriesModule } from './categories/categories.module';
       username: process.env.TYPEORM_USERNAME,
       password: process.env.TYPEORM_PASSWORD,
       database: process.env.TYPEORM_DATABASE,
-      entities: [],
-    }),
-    TypeOrmModule.forFeature([]),
+      entities: [Category],
+    })
   ],
   controllers: [AppController],
   providers: [AppService],
