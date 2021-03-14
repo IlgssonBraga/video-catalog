@@ -44,8 +44,8 @@ services:
         volumes:
             - .docker/postgres/db:/var/lib/postgresql/data:z
         environment:
-            - POSTGRES_PASSWORD:root
-            - POSTGRES_DB:code_micro_videos
+            - POSTGRES_DB:${TYPEORM_DATABASE}
+            - POSTGRES_PASSWORD:${TYPEORM_PASSWORD}
             - POSTGRES_HOST_AUTH_METHOD=trust
         networks:
             - app-network
