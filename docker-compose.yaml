@@ -5,11 +5,11 @@ services:
     app:
         build: .
         container_name: micro-videos-app
-        # entrypoint: dockerize -template ./.docker/app/.env:.env -wait tcp://db:3306 -timeout 40s ./.docker/entrypoint.sh
+        entrypoint: dockerize -wait tcp://db:5432 -timeout 60s ./.docker/entrypoint.sh
         environment:
             - DB_HOST=db
             - DB_DATABASE=code_micro_videos
-            - DB_USERNAME=root
+            - DB_USERNAME=postgres
             - DB_PASSWORD=root
         volumes:
             - .:/usr/app:z
@@ -35,18 +35,18 @@ services:
             - app
 
     db:
-        build: ./.docker/mysql
+        build: .docker/postgres
         container_name: micro-videos-db
         restart: always
         tty: true
         ports:
-            - "33006:3306"
+            - 5432:5432
         volumes:
-            - ./.docker/dbdata:/var/lib/mysql:z
+            - .docker/postgres/db:/var/lib/postgresql/data:z
         environment:
-            - MYSQL_DATABASE=code_micro_videos
-            - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_USER=root
+            - POSTGRES_PASSWORD:root
+            - POSTGRES_DB:code_micro_videos
+            # - POSTGRES_HOST_AUTH_METHOD=trust
         networks:
             - app-network
 
