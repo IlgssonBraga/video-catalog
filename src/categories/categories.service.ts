@@ -26,15 +26,23 @@ export class CategoriesService implements ICategoriesRepository {
     return categories;
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} category`;
-  // }
+  async findOne(id: number): Promise<Category> {
+    const category = await this.categoryRepository.findOneOrFail(id)
+    return category
+  }
 
-  // update(id: number, updateCategoryDto: UpdateCategoryDto) {
-  //   return `This action updates a #${id} category`;
-  // }
+  async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
+    await this.categoryRepository.findOneOrFail(id)
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} category`;
-  // }
+    await this.categoryRepository.update(id, updateCategoryDto)
+
+    const categoryUpdated = await this.categoryRepository.findOneOrFail(id)
+
+    return categoryUpdated
+  }
+
+  async remove(id: number): Promise<void> {
+    await this.categoryRepository.findOneOrFail(id)
+    this.categoryRepository.delete(id)
+  }
 }
