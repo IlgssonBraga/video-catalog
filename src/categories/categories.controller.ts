@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, HttpCode } from '@nestjs/common';
+import { ModelNotFoundExceptionFilter } from '../exeption-filters/model-not-found.exception-filter';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -9,28 +10,28 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  create(@Body() {name, description}: CreateCategoryDto) {
+  async create(@Body() {name, description}: CreateCategoryDto): Promise<Category> {
     return this.categoriesService.create({name, description});
   }
 
   @Get()
-  findAll(): Promise<Category[]> {
+  findAll(): Promise<Category[]>  {
     return this.categoriesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<Category | ModelNotFoundExceptionFilter> {
     return this.categoriesService.findOne(+id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
+  async update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<Category | ModelNotFoundExceptionFilter> {
     return this.categoriesService.update(+id, updateCategoryDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<void | ModelNotFoundExceptionFilter> {
     return this.categoriesService.remove(+id);
   }
 }

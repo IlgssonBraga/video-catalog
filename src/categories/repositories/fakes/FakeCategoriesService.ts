@@ -25,11 +25,12 @@ export class FakeCategoriesService implements ICategoriesRepository {
         return category
     }
 
-    async findOne(id: number): Promise<Category> {
+    async findOne(id: number): Promise<Category | ModelNotFoundExceptionFilter> {
         const category = this.categories.find(category => category.id === id)
 
         if(!category){
-            new ModelNotFoundExceptionFilter()
+            const error = new ModelNotFoundExceptionFilter()
+            return error
         }
 
         return category

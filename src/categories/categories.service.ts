@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ModelNotFoundExceptionFilter } from '../exeption-filters/model-not-found.exception-filter';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
@@ -26,12 +27,12 @@ export class CategoriesService implements ICategoriesRepository {
     return categories;
   }
 
-  async findOne(id: number): Promise<Category> {
+  async findOne(id: number): Promise<Category | ModelNotFoundExceptionFilter> {
     const category = await this.categoryRepository.findOneOrFail(id)
     return category
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
+  async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category | ModelNotFoundExceptionFilter> {
     await this.categoryRepository.findOneOrFail(id)
 
     await this.categoryRepository.update(id, updateCategoryDto)
@@ -41,7 +42,7 @@ export class CategoriesService implements ICategoriesRepository {
     return categoryUpdated
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<void | ModelNotFoundExceptionFilter> {
     await this.categoryRepository.findOneOrFail(id)
     this.categoryRepository.delete(id)
   }
