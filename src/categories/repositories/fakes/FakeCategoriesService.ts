@@ -36,11 +36,12 @@ export class FakeCategoriesService implements ICategoriesRepository {
         return category
     }
 
-    async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
+    async update(id: number, updateCategoryDto: UpdateCategoryDto): Promise<Category | ModelNotFoundExceptionFilter> {
         const category = this.categories.find(category => category.id === id)
 
         if(!category){
-            new ModelNotFoundExceptionFilter()
+            const error = new ModelNotFoundExceptionFilter()
+            return error
         }
 
         const indexCategory = this.categories.indexOf(category)
@@ -49,18 +50,15 @@ export class FakeCategoriesService implements ICategoriesRepository {
 
         const categoryUpdated = this.categories.find(category => category.id === id)
 
-        if(!categoryUpdated){
-            new ModelNotFoundExceptionFilter()
-        }
-
         return categoryUpdated
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: number): Promise<void | ModelNotFoundExceptionFilter> {
         const category = this.categories.find(category => category.id === id)
 
         if(!category){
-            new ModelNotFoundExceptionFilter()
+            const error = new ModelNotFoundExceptionFilter()
+            return error
         }
 
         this.categories = this.categories.filter(category => category.id !== id)
