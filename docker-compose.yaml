@@ -1,11 +1,30 @@
-version: '3'
+version: '3.8'
 
 services:
+
+    db:
+        build: .docker/postgres
+        container_name: micro-videos-db
+        restart: always
+        env_file:
+            - .env
+        tty: true
+        ports:
+            - 5432:5432
+        volumes:
+            - .docker/postgres/db:/var/lib/postgresql/data:z
+        environment:
+            - POSTGRES_DB=code_micro_videos
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=root
+        networks:
+            - app-network
 
     app:
         build: .
         container_name: micro-videos-app
-        entrypoint: dockerize -wait tcp://db:5432 -timeout 60s ./.docker/entrypoint.sh
+        entrypoint: ./entrypoint.sh
+        # entrypoint: dockerize -wait tcp://db:5432 -timeout 120s ./entrypoint.sh
         environment:
             - DB_HOST=db
             - DB_DATABASE=code_micro_videos
@@ -34,21 +53,7 @@ services:
         depends_on:
             - app
 
-    db:
-        build: .docker/postgres
-        container_name: micro-videos-db
-        restart: always
-        tty: true
-        ports:
-            - 5432:5432
-        volumes:
-            - .docker/postgres/db:/var/lib/postgresql/data:z
-        environment:
-            - POSTGRES_DB:${TYPEORM_DATABASE}
-            - POSTGRES_PASSWORD:${TYPEORM_PASSWORD}
-            - POSTGRES_HOST_AUTH_METHOD=trust
-        networks:
-            - app-network
+    
 
     redis:
         image: redis:alpine
