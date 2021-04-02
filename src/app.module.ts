@@ -7,6 +7,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { CategoriesService } from './categories/categories.service';
 import { Category } from './categories/entities/category.entity';
 // import { Category } from './categories/entities/category.entity';
+import { GenresModule } from './genres/genres.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { Category } from './categories/entities/category.entity';
       password: process.env.TYPEORM_PASSWORD,
       database: process.env.TYPEORM_DATABASE,
       entities: [Category],
-    })
+    }),
+    GenresModule
   ],
   controllers: [AppController],
   providers: [AppService],
